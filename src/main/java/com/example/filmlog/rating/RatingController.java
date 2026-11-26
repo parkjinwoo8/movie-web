@@ -34,7 +34,7 @@ public class RatingController {
         this.visitor = visitor;
     }
 
-    /** 내가 남긴 별점 전체: { "영화ID": 점수 } */
+    /*내가 남긴 별점 */
     @GetMapping("/mine")
     public Map<Long, Integer> mine(HttpServletRequest req, HttpServletResponse res) {
         String uid = visitor.resolve(req, res);
@@ -42,7 +42,7 @@ public class RatingController {
                 .collect(Collectors.toMap(Rating::getMovieId, Rating::getScore));
     }
 
-    /** 별점 등록 또는 수정 */
+    /* 별점 등록 또는 수정 */
     @PutMapping("/{movieId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rate(@PathVariable long movieId, @RequestBody ScoreRequest body,
@@ -62,7 +62,7 @@ public class RatingController {
         repo.save(r);
     }
 
-    /** 별점 취소 */
+    /* 별점 취소 */
     @DeleteMapping("/{movieId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable long movieId, HttpServletRequest req, HttpServletResponse res) {
@@ -70,7 +70,7 @@ public class RatingController {
         repo.findByVisitorIdAndMovieId(uid, movieId).ifPresent(repo::delete);
     }
 
-    /** 사이트 전체 방문자의 평균 별점 */
+    /* 전체 방문자 평균 별점 */
     @GetMapping("/{movieId}/summary")
     public Summary summary(@PathVariable long movieId) {
         Double avg = repo.averageByMovieId(movieId);
