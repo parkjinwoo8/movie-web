@@ -15,11 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * 카카오 로컬 API로 주소(또는 장소명)를 좌표로 바꿉니다.
- * 1) /v2/local/search/address.json  : 도로명·지번 주소
- * 2) 결과가 없으면 /v2/local/search/keyword.json : "강남역" 같은 장소명
- */
+
 @Service
 public class GeocodeService {
 
