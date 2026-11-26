@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
-/** 방문자(쿠키 uid) 한 명이 영화 한 편에 남긴 별점(1~5). */
+/* 한 명이 영화 한 편에 남긴 별점 */
 @Entity
 @Table(name = "ratings",
        uniqueConstraints = @UniqueConstraint(columnNames = {"visitor_id", "movie_id"}))
