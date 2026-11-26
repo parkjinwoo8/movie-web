@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>필름로그 – 영화 평점</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--surface:#fff;--ink:#14202b;--muted:#5d6b78;--line:#d5dce3;--accent:#2a4bff;--star:#e6a700;--shadow:rgba(20,32,43,.18)}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#101820;--surface:#18232e;--ink:#e8eef4;--muted:#93a3b2;--line:#2a3a48;--accent:#7b93ff;--star:#f2b928;--shadow:rgba(0,0,0,.5)}}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "Noto Sans KR",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1200px;margin:auto;padding:12px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.logo{font:900 24px "Noto Serif KR",serif;letter-spacing:-.02em;margin-right:auto}
+form{display:flex;gap:8px}
+input[type=search]{font:inherit;padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:240px;max-width:100%}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{padding:8px 14px;border:0;border-radius:8px;background:var(--accent);color:#fff;font-weight:500}
+@media (prefers-color-scheme:dark){.btn{color:#101820}}
+nav{max-width:1200px;margin:auto;padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.tab,.chip{padding:6px 14px;border:1px solid var(--line);border-radius:99px;background:transparent;color:var(--muted)}
+.tab[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+main{max-width:1200px;margin:auto;padding:20px}
+h1{font:900 clamp(28px,5vw,44px)/1.15 "Noto Serif KR",serif;letter-spacing:-.03em;margin:8px 0 4px}
+.sub{color:var(--muted);margin:0 0 16px}
+.genres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px 16px}
+.card{all:unset;cursor:pointer;display:block}
+.poster{position:relative;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:var(--line);box-shadow:0 6px 16px var(--shadow)}
+.poster img{width:100%;height:100%;object-fit:cover;display:block}
+.score{position:absolute;left:8px;bottom:8px;min-width:44px;padding:2px 8px;border-radius:6px;background:var(--ink);color:var(--bg);font:700 15px/1.5 "Noto Sans KR";text-align:center}
+.mine{position:absolute;right:8px;top:8px;padding:0 7px;border-radius:6px;background:var(--star);color:#14202b;font-weight:700;font-size:13px}
+.card h3{margin:10px 0 0;font-size:15px;line-height:1.35;font-weight:700}
+.card small{color:var(--muted)}
+.more{display:block;margin:32px auto;padding:10px 28px;border:1px solid var(--ink);border-radius:8px;background:transparent;color:var(--ink)}
+.msg{padding:48px 0;text-align:center;color:var(--muted)}
+dialog{width:min(860px,94vw);max-height:92vh;padding:0;border:0;border-radius:10px;background:var(--surface);color:var(--ink);overflow:auto}
+dialog::backdrop{background:rgba(10,16,22,.65)}
+.d-head{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px}
+.d-head img{width:100%;border-radius:6px;display:block}
+.d-head h2{font:900 28px/1.25 "Noto Serif KR",serif;margin:0 0 4px}
+.meta{color:var(--muted);margin:0 0 12px}
+.big{font:900 40px/1 "Noto Serif KR",serif}
+.big small{font:400 14px "Noto Sans KR";color:var(--muted);margin-left:6px}
+.stars{display:flex;gap:2px;margin:12px 0 4px}
+.stars button{border:0;background:none;padding:0;font-size:32px;line-height:1;color:var(--line)}
+.stars button.on{color:var(--star)}
+.d-body{padding:0 24px 24px}
+.d-body h4{margin:20px 0 8px;font-size:15px}
+.cast{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+.cast div{flex:0 0 84px;font-size:13px;line-height:1.35}
+.cast img,.cast i{display:block;width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--line);margin-bottom:6px}
+.book{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.book a,.book button{padding:8px 14px;border:1px solid var(--ink);border-radius:8px;background:transparent;color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
+.book a:hover,.book button:hover{background:var(--ink);color:var(--bg)}
+#tdlg{width:min(560px,94vw)}
+.t-wrap{padding:8px 24px 24px}
+.t-wrap h2{font:900 24px/1.25 "Noto Serif KR",serif;margin:0 0 4px}
+.t-list{list-style:none;margin:12px 0 0;padding:0}
+.t-item{padding:14px 0;border-top:1px solid var(--line);display:grid;gap:10px}
+.t-item small{color:var(--muted)}
+.tag{display:inline-block;margin-left:8px;padding:0 8px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);font-size:12px}
+.t-form{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.t-form input{flex:1 1 200px;width:auto}
+.pick{font:inherit;text-align:left;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer}
+.x{position:sticky;top:0;float:right;margin:10px;border:0;background:var(--bg);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:20px;z-index:2}
+@media (max-width:620px){.d-head{grid-template-columns:110px 1fr;gap:14px;padding:16px}.d-head h2{font-size:21px}.big{font-size:30px}.d-body{padding:0 16px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo">필름로그</div>
+    <form id="sf" role="search">
+      <input type="search" id="q" placeholder="영화 제목 검색" aria-label="영화 제목 검색">
+      <button class="btn">검색</button>
+    </form>
+    <button class="btn" type="button" id="near">내 주변 영화관</button>
+  </div>
+  <nav id="tabs" aria-label="영화 목록"></nav>
+</header>
+<main>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+  <div class="genres" id="genres" aria-label="장르 필터"></div>
+  <div class="grid" id="grid"></div>
+  <div class="msg" id="msg" hidden></div>
+  <button class="more" id="more" hidden>더 보기</button>
+</main>
+<dialog id="dlg" aria-label="영화 상세"></dialog>
+<dialog id="tdlg" aria-label="내 주변 영화관"></dialog>
+
+<script>
+/* ===== 설정 ===== */
+const IMG = "https://image.tmdb.org/t/p/";
+/* 예매 링크: 극장을 추가/수정하려면 이 목록만 고치면 됩니다. */
+const BOOKING = [
+  {name:"CGV", url:"https://www.cgv.co.kr/ticket/"},
+  {name:"롯데시네마", url:"https://www.lottecinema.co.kr/NLCHS/Ticketing"},
+  {name:"메가박스", url:"https://www.megabox.co.kr/booking"}
+];
+
+/* ===== 상태 ===== */
+const TABS = {popular:["인기","지금 가장 많이 보는 영화"],top_rated:["평점 높은 순","TMDB 이용자 평점이 높은 영화"],now_playing:["현재 상영작","지금 극장에서 볼 수 있는 영화"],upcoming:["개봉 예정","곧 극장에 걸릴 영화"]};
+const S = {mode:"popular",query:"",page:1,total:1,genre:null,items:[],genres:{}};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ===== 내 평점 (서버 DB에 저장) ===== */
+let mine = {};
+const siteText = s => s && s.count ? "사이트 평점 " + s.average.toFixed(1) + " (" + s.count + "명)" : "아직 사이트 평점이 없습니다.";
+
+/* ===== API ===== */
+async function api(path, params = {}, opt = {}){
+  const qs = Object.keys(params).length ? "?" + new URLSearchParams(params) : "";
+  const r = await fetch(path + qs, opt);
+  if(!r.ok){
+    let m = "데이터를 불러오지 못했습니다. (" + r.status + ")";
+    try{ m = (await r.json()).message || m; }catch(e){}
+    throw new Error(m);
+  }
+  return r.status === 204 ? null : r.json();
+}
+
+/* ===== 목록 ===== */
+function renderTabs(){
+  $("tabs").innerHTML = Object.entries(TABS).map(([k,[n]]) =>
+    `<button class="tab" data-m="${k}" aria-pressed="${!S.query && S.mode===k}">${n}</button>`).join("") +
+    `<button class="tab" data-m="mine" aria-pressed="${S.mode==='mine'}">내가 평가한 영화</button>`;
+}
+function renderGenres(){
+  const ids = [...new Set(S.items.flatMap(m => m.genre_ids || []))];
+  $("genres").innerHTML = ids.length ? [`<button class="chip" data-g="" aria-pressed="${!S.genre}">전체</button>`]
+    .concat(ids.map(g => `<button class="chip" data-g="${g}" aria-pressed="${S.genre==g}">${esc(S.genres[g]||g)}</button>`)).join("") : "";
+}
+function renderGrid(){
+  const list = S.items.filter(m => !S.genre || (m.genre_ids||[]).includes(+S.genre));
+  $("grid").innerHTML = list.map(m => {
+    const y = (m.release_date||"").slice(0,4);
+    const my = mine[m.id];
+    return `<button class="card" data-id="${m.id}">
+      <div class="poster">${m.poster_path ? `<img loading="lazy" src="${IMG}w342${m.poster_path}" alt="${esc(m.title)} 포스터">` : ""}
+        <span class="score" title="TMDB 평점">${m.vote_count ? m.vote_average.toFixed(1) : "–"}</span>
+        ${my ? `<span class="mine" title="내 평점">★${my}</span>` : ""}</div>
+      <h3>${esc(m.title)}</h3><small>${y || "개봉일 미정"}</small></button>`;
+  }).join("");
+  const empty = !list.length;
+  $("msg").hidden = !empty;
+  if(empty) $("msg").textContent = S.mode==="mine" ? "아직 평가한 영화가 없습니다. 영화를 열어 별점을 남겨 보세요." : "표시할 영화가 없습니다.";
+  $("more").hidden = S.mode==="mine" || S.page >= S.total;
+}
+async function load(reset = true){
+  if(reset){S.page = 1; S.items = []; S.genre = null}
+  else S.page++;
+  try{
+    if(S.mode === "mine"){
+      mine = await api("/api/ratings/mine");
+      const ids = Object.keys(mine);
+      S.items = await Promise.all(ids.map(async id => { const d = await api("/api/movies/" + id); d.genre_ids = d.genres.map(g => g.id); return d; }));
+      S.total = 1;
+    } else {
+      const d = S.query ? await api("/api/movies/search", {query:S.query, page:S.page})
+                        : await api("/api/movies", {mode:S.mode, page:S.page});
+      S.items = S.items.concat(d.results);
+      S.total = Math.min(d.total_pages, 500);
+    }
+  }catch(e){ $("msg").hidden = false; $("msg").textContent = e.message; return; }
+  const t = S.query ? [`“${S.query}” 검색 결과`, ""] : S.mode==="mine" ? ["내가 평가한 영화","이 브라우저에 저장된 내 별점입니다."] : TABS[S.mode];
+  $("title").textContent = t[0]; $("sub").textContent = t[1];
+  renderTabs(); renderGenres(); renderGrid();
+}
+
+/* ===== 상세 ===== */
+async function openDetail(id){
+  const dlg = $("dlg");
+  dlg.innerHTML = `<button class="x" aria-label="닫기">×</button><div class="msg">불러오는 중…</div>`;
+  dlg.showModal();
+  try{
+    const m = await api("/api/movies/" + id);
+    const sum = await api("/api/ratings/" + id + "/summary");
+    const dir = (m.credits.crew.find(c => c.job==="Director")||{}).name;
+    const cast = m.credits.cast.slice(0,10);
+    const rel = m.release_date ? new Date(m.release_date) : null;
+    const showing = !rel || (Date.now() - rel) < 120 * 864e5; // 개봉 후 약 4개월 이내 또는 미개봉
+    dlg.innerHTML = `<button class="x" aria-label="닫기">×</button>
+      <div class="d-head">
+        <div>${m.poster_path ? `<img src="${IMG}w342${m.poster_path}" alt="${esc(m.title)} 포스터">` : ""}</div>
+        <div>
+          <h2>${esc(m.title)}</h2>
+          <p class="meta">${esc((m.release_date||"").slice(0,4))}${m.runtime ? " · " + m.runtime + "분" : ""}${m.genres.length ? " · " + esc(m.genres.map(g=>g.name).join(", ")) : ""}${dir ? "<br>감독 " + esc(dir) : ""}</p>
+          <div class="big">${m.vote_count ? m.vote_average.toFixed(1) : "–"}<small>TMDB 평점 · ${m.vote_count.toLocaleString()}명</small></div>
+          <div class="stars" role="group" aria-label="내 별점">${[1,2,3,4,5].map(n => `<button data-s="${n}" aria-label="${n}점" class="${(mine[id]||0)>=n?'on':''}">★</button>`).join("")}</div>
+          <small class="meta" id="mine-note">${mine[id] ? "내 평점 " + mine[id] + "점 (같은 별을 누르면 취소)" : "별을 눌러 내 평점을 남겨 보세요."}</small>
+          <small class="meta" id="site-note">${siteText(sum)}</small>
+        </div>
+      </div>
+      <div class="d-body">
+        <h4>예매하기</h4>
+        <div class="book">
+          ${BOOKING.map(b => `<a href="${b.url}" target="_blank" rel="noopener noreferrer">${b.name}</a>`).join("")}
+          <button type="button" data-copy="${esc(m.title)}">제목 복사</button>
+          <button type="button" data-theaters>내 주변 영화관</button>
+        </div>
+        <p class="meta" id="book-note">${showing ? "극장 사이트로 이동한 뒤 영화 제목을 검색해 예매하세요. 제목 복사 버튼을 누르면 편합니다." : "개봉한 지 오래된 영화라 현재 상영하지 않을 수 있습니다."}</p>
+        ${m.tagline ? `<p class="meta">${esc(m.tagline)}</p>` : ""}
+        <h4>줄거리</h4><p>${esc(m.overview) || "등록된 줄거리가 없습니다."}</p>
+        ${cast.length ? `<h4>출연</h4><div class="cast">${cast.map(c => `<div>${c.profile_path ? `<img loading="lazy" src="${IMG}w185${c.profile_path}" alt="">` : "<i></i>"}<b>${esc(c.name)}</b><br><small>${esc(c.character)}</small></div>`).join("")}</div>` : ""}
+      </div>`;
+    dlg.dataset.id = id;
+  }catch(e){ dlg.innerHTML = `<button class="x" aria-label="닫기">×</button><div class="msg">${esc(e.message)}</div>`; }
+}
+
+/* ===== 이벤트 ===== */
+$("tabs").onclick = e => { const b = e.target.closest("[data-m]"); if(!b) return; S.mode = b.dataset.m; S.query = ""; $("q").value = ""; load(); };
+$("genres").onclick = e => { const b = e.target.closest("[data-g]"); if(!b) return; S.genre = b.dataset.g || null; renderGenres(); renderGrid(); };
+$("grid").onclick = e => { const c = e.target.closest("[data-id]"); if(c) openDetail(c.dataset.id); };
+$("more").onclick = () => load(false);
+$("sf").onsubmit = e => { e.preventDefault(); S.query = $("q").value.trim(); if(S.query) S.mode = ""; else S.mode = "popular"; load(); };
+$("dlg").onclick = async e => {
+  const dlg = $("dlg");
+  if(e.target === dlg || e.target.closest(".x")) return dlg.close();
+  if(e.target.closest("[data-theaters]")) return openTheaters();
+  const cp = e.target.closest("[data-copy]");
+  if(cp){
+    const done = () => { cp.textContent = "복사됨"; setTimeout(() => cp.textContent = "제목 복사", 1500); };
+    const fallback = () => { const t = document.createElement("textarea"); t.value = cp.dataset.copy; document.body.appendChild(t); t.select(); try{document.execCommand("copy"); done();}catch(_){} t.remove(); };
+    (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.copy).then(done, fallback) : fallback());
+    return;
+  }
+  const s = e.target.closest("[data-s]");
+  if(s){
+    const id = dlg.dataset.id, n = +s.dataset.s;
+    try{
+      if(mine[id] === n){ await api("/api/ratings/" + id, {}, {method:"DELETE"}); delete mine[id]; }
+      else { await api("/api/ratings/" + id, {}, {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({score:n})}); mine[id] = n; }
+    }catch(err){ $("mine-note").textContent = err.message; return; }
+    dlg.querySelectorAll(".stars button").forEach(b => b.classList.toggle("on", (mine[id]||0) >= +b.dataset.s));
+    $("mine-note").textContent = mine[id] ? "내 평점 " + mine[id] + "점 (같은 별을 누르면 취소)" : "별을 눌러 내 평점을 남겨 보세요.";
+    try{ $("site-note").textContent = siteText(await api("/api/ratings/" + id + "/summary")); }catch(_){}
+  }
+};
+$("dlg").addEventListener("close", () => { renderGrid(); if(S.mode==="mine") load(); });
+
+/* ===== 내 주변 영화관 ===== */
+const fmtDist = m => m < 1000 ? m + "m" : (m / 1000).toFixed(1) + "km";
+const ext = (url, label) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+function theaterCard(t){
+  return `<li class="t-item"><div><b>${esc(t.name)}</b>${t.brand ? `<span class="tag">${esc(t.brand)}</span>` : ""}<br>
+    <small>${fmtDist(t.distance)} · ${esc(t.address || "주소 정보 없음")}${t.phone ? " · " + esc(t.phone) : ""}</small></div>
+    <div class="book">${t.bookingUrl ? ext(t.bookingUrl, esc(t.brand) + " 예매") : ""}${ext(t.mapUrl, "지도")}${ext(t.routeUrl, "길찾기")}</div></li>`;
+}
+function openTheaters(){
+  const d = $("tdlg");
+  d.innerHTML = `<button class="x" aria-label="닫기">×</button><div class="t-wrap"><h2>내 주변 영화관</h2>
+    <form id="t-form" class="t-form"><input type="search" id="t-q" placeholder="주소나 장소 (예: 강남역, 테헤란로 152)" aria-label="주소 검색"><button class="btn">주소로 찾기</button><button class="btn" type="button" id="t-gps">내 위치로 찾기</button></form>
+    <div id="t-body"></div></div>`;
+  const show = html => { $("t-body").innerHTML = html; };
+
+  const run = async (lat, lng, label) => {
+    show(`<p class="msg">가까운 영화관을 찾는 중…</p>`);
+    try{
+      const list = await api("/api/theaters", {lat, lng});
+      show(list.length
+        ? `<p class="meta">${esc(label)} 기준 반경 5km 이내, 가까운 순입니다. 좌표는 저장되지 않습니다.</p><ul class="t-list">${list.map(theaterCard).join("")}</ul>`
+        : `<p class="msg">${esc(label)} 반경 5km 안에서 영화관을 찾지 못했습니다.</p>`);
+    }catch(e){ show(`<p class="msg">${esc(e.message)}</p>`); }
+  };
+
+  const gps = () => {
+    show(`<p class="msg">현재 위치를 확인하는 중…</p>`);
+    if(!navigator.geolocation) return show(`<p class="msg">이 브라우저는 위치 기능을 지원하지 않습니다. 위에서 주소를 입력해 보세요.</p>`);
+    navigator.geolocation.getCurrentPosition(
+      pos => run(pos.coords.latitude, pos.coords.longitude, "내 위치"),
+      err => show(`<p class="msg">${err.code === 1 ? "위치 권한이 거부되었습니다. 위에서 주소를 입력하거나 브라우저 설정에서 위치를 허용해 주세요." : "현재 위치를 확인하지 못했습니다. 위에서 주소를 입력해 보세요."}</p>`),
+      {timeout:10000, maximumAge:300000});
+  };
+
+  $("t-gps").onclick = gps;
+  $("t-form").onsubmit = async e => {
+    e.preventDefault();
+    const q = $("t-q").value.trim();
+    if(!q) return;
+    show(`<p class="msg">주소를 찾는 중…</p>`);
+    try{
+      const places = await api("/api/geocode", {query:q});
+      if(!places.length) return show(`<p class="msg">“${esc(q)}”에 해당하는 주소를 찾지 못했습니다. 도로명, 지번, 역 이름으로 다시 입력해 보세요.</p>`);
+      if(places.length === 1) return run(places[0].lat, places[0].lng, places[0].label);
+      show(`<p class="meta">어느 곳인가요?</p><ul class="t-list">${places.map((p, i) => `<li class="t-item"><button type="button" class="pick" data-i="${i}">${esc(p.label)}</button></li>`).join("")}</ul>`);
+      $("t-body").onclick = ev => {
+        const b = ev.target.closest(".pick");
+        if(b){ const p = places[+b.dataset.i]; run(p.lat, p.lng, p.label); }
+      };
+    }catch(err){ show(`<p class="msg">${esc(err.message)}</p>`); }
+  };
+
+  if(!d.open) d.showModal();
+  gps();
+}
+$("near").onclick = openTheaters;
+$("tdlg").onclick = e => { const d = $("tdlg"); if(e.target === d || e.target.closest(".x")) d.close(); };
+
+/* ===== 시작 ===== */
+(async () => {
+  try{ (await api("/api/genres")).genres.forEach(g => S.genres[g.id] = g.name); }catch(e){}
+  try{ mine = await api("/api/ratings/mine"); }catch(e){}
+  load();
+})();
+</script>
+</body>
+</html>
