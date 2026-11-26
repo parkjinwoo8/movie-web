@@ -20,7 +20,7 @@ public class TheaterController {
         this.service = service;
     }
 
-    /** 위도·경도 주변의 영화관을 가까운 순으로 돌려줍니다. 좌표는 저장하지 않습니다. */
+    /*주변의 영화관을 가까운 순으로 돌려줌 */
     @GetMapping
     public List<Theater> nearby(@RequestParam double lat, @RequestParam double lng,
                                 @RequestParam(defaultValue = "5000") int radius) {
