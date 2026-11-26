@@ -22,9 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * 좌표 주변 영화관을 찾습니다.
- * 카카오 REST API 키가 설정되어 있으면 카카오 로컬 API를, 없으면 OpenStreetMap(Overpass)을 사용합니다.
+/*좌표 주변 영화관을 찾기 
+카카오 로컬 API 사용(링크 복사 -> 넣기)
  */
 @Service
 public class TheaterService {
