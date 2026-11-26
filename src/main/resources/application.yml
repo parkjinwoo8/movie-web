@@ -1,5 +1,5 @@
 tmdb:
-  # 운영 환경에서는 환경변수 TMDB_API_KEY 로 덮어쓰세요.
+  # 운영 환경에서는 환경변수 TMDB_API_KEY 로 덮어쓰기 (api)
   api-key: ${TMDB_API_KEY:cf6596968be8e5cb8fbf143f961c5d05}
   base-url: https://api.themoviedb.org/3
 
@@ -18,5 +18,5 @@ spring:
     open-in-view: false
 
 kakao:
-  # 선택: 설정하면 카카오 로컬 API로 영화관을 검색합니다. 비어 있으면 OpenStreetMap(Overpass)을 사용합니다.
+  # 선택: 설정하면 카카오 로컬 API로 영화관을 검색
   rest-api-key: ${KAKAO_REST_API_KEY:}
