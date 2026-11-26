@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
-/** TMDB API 호출을 전담합니다. API 키는 서버에만 존재합니다. */
+/* TMDB API 가져오기 */
 @Component
 public class TmdbClient {
 
@@ -25,7 +25,7 @@ public class TmdbClient {
         this.apiKey = apiKey;
     }
 
-    /** TMDB 응답 JSON을 가공 없이 문자열로 돌려줍니다. */
+    /* TMDB 응답 JSON을 문자열로 */
     public String get(String path, Map<String, String> params) {
         try {
             return client.get().uri(b -> {
@@ -33,7 +33,7 @@ public class TmdbClient {
                 vars.put("api_key", apiKey);
                 b.path(path).queryParam("api_key", "{api_key}").queryParam("language", "ko-KR");
                 params.forEach((k, v) -> {
-                    b.queryParam(k, "{" + k + "}");   // 값은 템플릿 변수로 넘겨 안전하게 인코딩
+                    b.queryParam(k, "{" + k + "}");   
                     vars.put(k, v);
                 });
                 return b.build(vars);
