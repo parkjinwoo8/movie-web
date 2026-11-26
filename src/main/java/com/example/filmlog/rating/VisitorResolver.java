@@ -8,7 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/** 로그인 없이 방문자를 구분하기 위한 익명 uid 쿠키를 읽거나 새로 발급합니다. */
+
 @Component
 public class VisitorResolver {
 
