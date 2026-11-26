@@ -20,7 +20,7 @@ public class GeocodeController {
         this.service = service;
     }
 
-    /** 주소·장소명 → 좌표 후보(최대 5건) */
+  
     @GetMapping
     public List<Place> geocode(@RequestParam String query) {
         String q = query.trim();
